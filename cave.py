@@ -10,13 +10,14 @@ class Cave:
 		self._set_ladder()
 		self._set_wumpus()
 		self._set_gold()
+		self._create_pits()
 	
 	def _build_rooms(self, height=4, width=4):
 		"""
 		The cave looks like this:
 				4 x x x x
 				3 x x x x
-		y-axis	2 x x x x
+        y-axis	2 x x x x
 				1 x x x x
 				  1 2 3 4
 				    x-axis
@@ -98,6 +99,25 @@ class Cave:
 			column = self.get_column(i)
 			self._join_column(column)
 
+	def _create_pits(self):
+		'''Creates pits. Each tile that isn't (1,1) has a 0.2 change of
+		being a pit.
+		'''
+		for room in self._rooms:
+			if not (room.x == 1 and room.y == 1):
+				roll = random.randint(1, 5)
+				if roll == 1:
+					self._spawn_pit(room)
+
+	def _spawn_pit(self, room):
+		'''Handles low-level details of creating a pit.'''
+		if not room.pit:
+			room.toggle_pit()
+		for adjacent in [room.north, room.south, room.east, room.west]:
+			if isinstance(adjacent, Room):
+				if not adjacent.breeze:
+					adjacent.toggle_breeze()
+
 	def get_unoccupied_rooms(self):
 		room_list = []
 		for room in self._rooms:
@@ -161,6 +181,8 @@ class Cave:
 			result += "B"
 		if room.stench:
 			result += "S"
+		if room.pit:
+			result += "P"
 		return result
 
 class Room:
@@ -174,6 +196,7 @@ class Room:
 		self._gold = False
 		self._breeze = False
 		self._stench = False
+		self._pit = False
 
 	@property
 	def x(self):
@@ -206,6 +229,10 @@ class Room:
 	@property
 	def stench(self):
 		return self._stench
+
+	@property
+	def pit(self):
+		return self._pit
 
 	@property
 	def north(self):
@@ -261,6 +288,9 @@ class Room:
 
 	def toggle_stench(self):
 		self._stench = not self._stench
+
+	def toggle_pit(self):
+		self._pit = not self._pit
 
 class Wall:
 	pass
