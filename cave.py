@@ -76,7 +76,7 @@ class Cave:
 	def _join_row(self, row):
 		'''Connects a row horizontally'''
 		for i in range(len(row) - 1):
-			east_room, west_room = row[i], row[i + 1]
+			west_room, east_room = row[i], row[i + 1]
 			east_room.west = west_room
 			west_room.east = east_room
 
@@ -184,6 +184,7 @@ class Cave:
 		if room.pit:
 			result += "P"
 		return result
+
 
 class Room:
 	def __init__(self, x, y):
