@@ -60,8 +60,16 @@ class Cave:
 		# create stench in nearby rooms
 		for adjacent in [room.north, room.south, room.east, room.west]:
 			if isinstance(adjacent, Room):
-				if not adjacent.stench:
-					adjacent.toggle_stench()
+				adjacent.inc_stench()
+
+	def kill_wumpus(self, room):
+		'''Handles low-level details of removing a wumpus'''
+		assert(room.wumpus)
+		room.toggle_wumpus()
+		# remove stench
+		for adjacent in [room.north, room.south, room.east, room.west]:
+			if isinstance(adjacent, Room):
+				adjacent.dec_stench()
 
 	def _set_gold(self, num_gold=1):
 		'''Sets up the gold'''
@@ -196,7 +204,7 @@ class Room:
 		self._wumpus = False
 		self._gold = False
 		self._breeze = False
-		self._stench = False
+		self._stench = 0
 		self._pit = False
 
 	@property
@@ -229,7 +237,7 @@ class Room:
 
 	@property
 	def stench(self):
-		return self._stench
+		return self._stench > 0
 
 	@property
 	def pit(self):
@@ -287,8 +295,11 @@ class Room:
 	def toggle_breeze(self):
 		self._breeze = not self._breeze
 
-	def toggle_stench(self):
-		self._stench = not self._stench
+	def inc_stench(self):
+		self._stench += 1
+
+	def dec_stench(self):
+		self._stench -= 1
 
 	def toggle_pit(self):
 		self._pit = not self._pit
