@@ -41,8 +41,22 @@ class GameState:
 		self._bump = False
 		self._scream = False
 
+	def _end_of_turn(self):
+		'''Handles end-of-turn housekeeping. Death is an important one. If you end your turn
+		on a wumpus or a pit tile, you die.'''
+		if self._current_room.pit or self._current_room.wumpus:
+			# death mechanic
+			self._new_cave()
+			pass
+
 	# =======================================================================
 	# actions
+
+	# def take_action(self, action):
+	# 	'''decorator for taking an action'''
+	# 	self._start_of_turn()
+	# 	action()
+	# 	self._end_of_turn()
 
 	def move_forward(self):
 		'''Moves the player forward'''
