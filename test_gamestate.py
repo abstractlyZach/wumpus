@@ -23,5 +23,6 @@ while input_string != 'q':
 	game_state._cave.print()
 	print('player: {}'.format(game_state.player_location))
 	print('facing: {}'.format(game_state.player_orientation))
+	print('total points: {}'.format(game_state.points))
 	print(game_state.get_percepts())
 	input_string = input('next move? ')
