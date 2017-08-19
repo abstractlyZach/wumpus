@@ -193,6 +193,14 @@ class Cave:
 			result += "P"
 		return result
 
+	@property
+	def x_boundaries(self):
+		return self._x_boundaries
+
+	@property
+	def y_boundaries(self):
+		return self._y_boundaries
+
 
 class Room:
 	def __init__(self, x, y):
@@ -206,6 +214,7 @@ class Room:
 		self._breeze = False
 		self._stench = 0
 		self._pit = False
+		self._visited = False
 
 	@property
 	def x(self):
@@ -242,6 +251,10 @@ class Room:
 	@property
 	def pit(self):
 		return self._pit
+
+	@property
+	def visited(self):
+		return self._visited
 
 	@property
 	def north(self):
@@ -303,6 +316,9 @@ class Room:
 
 	def toggle_pit(self):
 		self._pit = not self._pit
+
+	def mark_visited(self):
+		self._visited = True
 
 class Wall:
 	pass

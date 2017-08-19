@@ -9,18 +9,22 @@ Percepts = namedtuple('Percepts',
 					['glitter', 'breeze', 'scream', 'bump', 'stench']
 					)
 
+PLAYER_DIRECTION_MARKERS = {'north': '^', 'south': 'v', 'east': '>', 'west': '<'}
+
 class GameState:
-	def __init__(self):
+	def __init__(self, fog_on=False):
 		self._bump = False
 		self._scream = False
 		self._points = 0
 		self._new_cave()
+		self._fog_on = fog_on
 
 	def _new_cave(self):
 		self._cave = cave.Cave()
 		self._current_room = self._cave.get_room(1, 1)
 		self._current_orientation = 'east'
 		self._player_holding_gold = False
+		self._current_room.mark_visited() # mark the room visited when you spawn there. All other rooms are walked intoforwar
 
 	def _next_room(self, current_room=None):
 		'''Returns the next room, which can be a Room or a Wall'''
@@ -48,6 +52,7 @@ class GameState:
 	def _end_of_turn(self):
 		'''Handles end-of-turn housekeeping. Death is an important one. If you end your turn
 		on a wumpus or a pit tile, you die.'''
+		self._current_room.mark_visited()
 		if self._current_room.pit or self._current_room.wumpus:
 			# death mechanic
 			self._points -= 1000
@@ -134,6 +139,42 @@ class GameState:
 						bump=self._bump)
 		# print(percepts)
 		return percepts
+
+	def print(self):
+		'''Print a map of the current gamestate'''
+		empty_line = '|     ' * self._cave.x_boundaries[1] + '|'
+		print('-' * ((6 * self._cave.x_boundaries[1]) + 1))
+		for y in range(self._cave.y_boundaries[1], 0, -1):
+			print(empty_line)
+			print(empty_line)
+			# TODO: this can be much neater
+			if not self._fog_on:
+				room_line = '|'
+				for x in range(1, self._cave.x_boundaries[1] + 1):
+					room_line += '{:^5}'.format(self._cave.room_string(x, y))
+					room_line += '|'
+				print(room_line)
+			else:
+				room_line = '|'
+				for x in range(1, self._cave.x_boundaries[1] + 1):
+					if self._cave.get_room(x, y).visited:
+						room_line += '{:^5}'.format(self._cave.room_string(x, y))
+					else:
+						room_line += '  ?  '
+					room_line += '|'
+				print(room_line)
+			player_marker_line = '|'
+			for x in range(1, self._cave.x_boundaries[1] + 1):
+				if (self._current_room.x, self._current_room.y) == (x, y):
+					player_marker_line += '{:^5}'.format(PLAYER_DIRECTION_MARKERS[self._current_orientation])
+				else:
+					player_marker_line += '     '
+				player_marker_line += '|'
+			print(player_marker_line)
+			print('-' * ((6 * self._cave.x_boundaries[1]) + 1))
+
+	def toggle_fog(self):
+		self._fog_on = not self._fog_on
 
 	@property
 	def player_location(self):
