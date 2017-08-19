@@ -138,9 +138,9 @@ class Cave:
 		Returns the room object at the location.
 		'''
 		if x < self._x_boundaries[0] or x > self._x_boundaries[1]:
-			raise Exception(str(x) + " is out of x boundaries: " + str(self._x_boundaries))
+			raise OutOfBoundsException(str(x) + " is out of x boundaries: " + str(self._x_boundaries))
 		if y < self._y_boundaries[0] or y > self._y_boundaries[1]:
-			raise Exception(str(y) + " is out of y boundaries: " + str(self._y_boundaries))
+			raise OutOfBoundsException(str(y) + " is out of y boundaries: " + str(self._y_boundaries))
 
 		for room in self._rooms:
 			if (room.x == x) and (room.y == y):
@@ -321,4 +321,7 @@ class Room:
 		self._visited = True
 
 class Wall:
+	pass
+
+class OutOfBoundsException(Exception):
 	pass
