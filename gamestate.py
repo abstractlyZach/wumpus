@@ -23,7 +23,7 @@ class GameState:
     def _new_cave(self):
         self._cave = cave.Cave()
         self._current_room = self._cave.get_room(1, 1)
-        self._current_orientation = 'east'
+
         self._player_holding_gold = False
         # mark the room visited when you spawn there. All other rooms are walked into
         #     so that gets handled at end-of-turn
@@ -31,7 +31,7 @@ class GameState:
 
 
     def _next_room(self, current_room=None):
-        '''Returns the next room, which can be a Room or a Wall'''
+        """Returns the next room, which can be a Room or a Wall"""
         if not current_room:
             current_room = self._current_room
         if self._current_orientation == 'west':
@@ -47,15 +47,16 @@ class GameState:
 							 He's facing: {}.".format(self._current_orientation))
 
     def _start_of_turn(self):
-        '''Handle start-of-turn housekeeping, like turning
-        off the scream or the bumping'''
+        """Handle start-of-turn housekeeping, like turning off the scream or the bumping."""
         self._bump = False
         self._scream = False
         self._points -= 1
 
     def _end_of_turn(self):
-        '''Handles end-of-turn housekeeping. Death is an important one. If you end your turn
-        on a wumpus or a pit tile, you die.'''
+        """
+        Handles end-of-turn housekeeping. Death is an important one. If you end your turn on a wumpus or a
+        pit tile, you die.
+        """
         self._current_room.mark_visited()
         if self._current_room.pit or self._current_room.wumpus:
             # death mechanic
@@ -66,7 +67,7 @@ class GameState:
     # actions
 
     def take_action(action_function):
-        '''decorator for taking an action'''
+        """decorator for taking an action"""
         def turn_wrapper(self):
             self._start_of_turn()
             action_function(self)
@@ -75,7 +76,7 @@ class GameState:
 
     @take_action
     def move_forward(self):
-        '''Moves the player forward'''
+        """Moves the player forward"""
         next_room = self._next_room()
         if isinstance(next_room, cave.Wall):
             # self._current_room = starting_room
@@ -96,7 +97,7 @@ class GameState:
 
     @take_action
     def grab(self):
-        '''Grabs gold if it's on the ground'''
+        """Grabs gold if it's on the ground"""
         if self._current_room.gold:
             # grab gold
             self._current_room.toggle_gold()
@@ -105,8 +106,8 @@ class GameState:
 
     @take_action
     def shoot(self):
-        '''Fire the arrow in the current direction'''
-        self._points -= 9 # shooting arrow is total -9 points
+        """Fire the arrow in the current direction"""
+        self._points -= 9 # shooting arrow is total -10 points
         next_room = self._next_room()
         while not isinstance(next_room, cave.Wall) and not next_room.wumpus:
             next_room = self._next_room(next_room)
@@ -121,7 +122,7 @@ class GameState:
 
     @take_action
     def climb(self):
-        '''Attempt to climb a ladder'''
+        """Attempt to climb a ladder"""
         if self._current_room.ladder:
             if self._player_holding_gold:
                 self._points += 1000
@@ -132,19 +133,16 @@ class GameState:
     # =======================================================================
 
     def get_percepts(self):
-        '''Returns the set of percepts after an action is taken.'''
-        # set scream
-        # set bump
+        """Returns the set of percepts after an action is taken."""
         percepts = Percepts(glitter=self._current_room.gold,
                             breeze=self._current_room.breeze,
                             stench=self._current_room.stench,
                             scream=self._scream,
                             bump=self._bump)
-        # print(percepts)
         return percepts
 
     def print(self):
-        '''Print a map of the current gamestate'''
+        """Print a map of the current gamestate"""
         empty_line = '|     ' * self._cave.x_boundaries[1] + '|'
         print('-' * ((6 * self._cave.x_boundaries[1]) + 1))
         for y in range(self._cave.y_boundaries[1], 0, -1):
@@ -180,7 +178,7 @@ class GameState:
         self._dev_mode = not self._dev_mode
 
     def dev_command(command):
-        '''decorator for using dev commands'''
+        """decorator for using dev commands"""
         def validate_devmode(self):
             if self._dev_mode:
                 command(self)
@@ -201,17 +199,17 @@ class GameState:
 
     @property
     def player_location(self):
-        '''Returns the coordinates of the player's location'''
+        """Returns the coordinates of the player's location"""
         return (self._current_room.x, self._current_room.y)
 
     @property
     def player_orientation(self):
-        '''Returns the player's current orientation'''
+        """Returns the player's current orientation"""
         return self._current_orientation
 
     @property
     def points(self):
-        '''Returns how many points the player has'''
+        """Returns how many points the player has"""
         return self._points
 
 
