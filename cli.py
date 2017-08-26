@@ -48,7 +48,7 @@ def handle_command(game_state, command):
     elif command == 'fog':
         game_state.toggle_fog()
     else:
-        raise InvalidCommandException('InvalidCommandException: {} is not a valid command'.foramt(command))
+        raise InvalidCommandException('InvalidCommandException: {} is not a valid command'.format(command))
 
 class InvalidCommandException(Exception):
     pass
