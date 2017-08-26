@@ -1,5 +1,4 @@
-# test_gamestate.py
-
+#!/usr/bin/env python3
 import cli
 
 fog_on = True

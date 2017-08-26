@@ -2,8 +2,9 @@ import gamestate
 
 
 def run_game(fog_on=False):
+    """Runs the game through the CLI."""
     game_state = gamestate.GameState(fog_on=fog_on)
-    input_string = 'abc'
+    input_string = 'pass'
     while input_string != 'q':
         args = input_string.split(' ')
         command = args[0]
@@ -21,13 +22,30 @@ def run_game(fog_on=False):
             print(e)
         except gamestate.DevModeException as e:
             print(e)
-        game_state.print()
-        print('player: {}'.format(game_state.player_location))
-        print('facing: {}'.format(game_state.player_orientation))
         print('total points: {}'.format(game_state.points))
-        print(game_state.get_percepts())
-        input_string = input('next move? ')
+        game_state.print()
+        percepts = game_state.get_percepts()
+        print(get_percept_message(percepts))
+        # print('player: {}'.format(game_state.player_location))
+        # print('facing: {}'.format(game_state.player_orientation))
+        # print(game_state.get_percepts())
+        input_string = input('Next move? ')
 
+
+def get_percept_message(percepts):
+    """Return a string based on the set of percepts for the turn."""
+    message_list = []
+    if percepts.glitter:
+        message_list.append('You see something glittering on the ground.')
+    if percepts.breeze:
+        message_list.append('You feel a cool breeze.')
+    if percepts.scream:
+        message_list.append('You hear a gut-wrenching scream.')
+    if percepts.bump:
+        message_list.append('Your face hurts. You ran into a wall.')
+    if percepts.stench:
+        message_list.append("PEEYEWWWWWW! What's that smell?! Something rank lurks nearby...")
+    return '\n'.join(message_list)
 
 def handle_command(game_state, command):
     '''Parses the command string and executes the action.'''
@@ -47,6 +65,8 @@ def handle_command(game_state, command):
         game_state.toggle_dev_mode()
     elif command == 'fog':
         game_state.toggle_fog()
+    elif command == 'pass':
+        pass
     else:
         raise InvalidCommandException('InvalidCommandException: {} is not a valid command'.format(command))
 
