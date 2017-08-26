@@ -19,9 +19,15 @@ class GameState:
         self._new_cave()
         self._fog_on = fog_on
         self._dev_mode = False
+        self._num_caves_traversed = 0
+        self._num_deaths = 0
+        self._num_wumpus_kills = 0
+        self._gold_grabbed = 0
+        self._gold_kept = 0
 
     def _new_cave(self):
         self._cave = cave.Cave()
+        self._num_caves_traversed += 1
         self._current_room = self._cave.get_room(1, 1)
 
         self._player_holding_gold = False
@@ -61,6 +67,7 @@ class GameState:
         if self._current_room.pit or self._current_room.wumpus:
             # death mechanic
             self._points -= 1000
+            self._num_deaths += 1
             self._new_cave()
 
     # =======================================================================
@@ -102,6 +109,7 @@ class GameState:
             # grab gold
             self._current_room.toggle_gold()
             self._player_holding_gold = True
+            self._gold_grabbed += 1
             pass
 
     @take_action
@@ -118,7 +126,7 @@ class GameState:
             # wumpus dead. wumpus SCREAMS
             self._scream = True
             self._cave.kill_wumpus(next_room)
-            pass
+            self._num_wumpus_kills += 1
 
     @take_action
     def climb(self):
@@ -126,6 +134,7 @@ class GameState:
         if self._current_room.ladder:
             if self._player_holding_gold:
                 self._points += 1000
+                self._gold_kept += 1
             self._new_cave()
         # notify player?
 
@@ -215,6 +224,28 @@ class GameState:
     def points(self):
         """Returns how many points the player has"""
         return self._points
+
+    @property
+    def num_caves_traversed(self):
+        """Returns the number of caves traversed in this session."""
+        return self._num_caves_traversed
+
+    @property
+    def num_deaths(self):
+        """Returns the number of player deaths this session."""
+        return self._num_deaths
+
+    @property
+    def num_wumpus_kills(self):
+        return self._num_wumpus_kills
+
+    @property
+    def gold_grabbed(self):
+        return self._gold_grabbed
+
+    @property
+    def gold_kept(self):
+        return self._gold_kept
 
 
 class DevModeException(Exception):
