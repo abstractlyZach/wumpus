@@ -139,6 +139,10 @@ class GameState:
                             stench=self._current_room.stench,
                             scream=self._scream,
                             bump=self._bump)
+        """
+        I feel like the player should be able to perceive themself falling into a pit or being eaten by a wumpus,
+        but Norvig-Russell seems to be pretty explicit that the player only receives these 5 percepts. Tough luck.
+        """
         return percepts
 
     def print(self):
