@@ -161,7 +161,7 @@ class Cave:
 			column.append(self.get_room(x, y))
 		return column
 
-	def print(self):
+	def print_cave(self):
 		empty_line = '|     ' * self._x_boundaries[1] + '|'
 		print('-' * ((6 * self._x_boundaries[1]) + 1))
 		for y in range(self._y_boundaries[1], 0, -1):

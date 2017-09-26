@@ -3,7 +3,7 @@
 import cave
 
 my_cave = cave.Cave()
-my_cave.print()
+my_cave.print_cave()
 
 room11 = my_cave.get_room(1,1)
 room44 = my_cave.get_room(4,4)

@@ -23,7 +23,7 @@ def run_game(fog_on=False):
         except gamestate.DevModeException as e:
             print(e)
         print('total points: {}'.format(game_state.points))
-        game_state.print()
+        game_state.print_state()
         percepts = game_state.get_percepts()
         print(get_percept_message(percepts))
         # print('player: {}'.format(game_state.player_location))

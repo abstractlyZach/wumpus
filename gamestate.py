@@ -154,7 +154,7 @@ class GameState:
         """
         return percepts
 
-    def print(self):
+    def print_state(self):
         """Print a map of the current gamestate"""
         empty_line = '|     ' * self._cave.x_boundaries[1] + '|'
         print('-' * ((6 * self._cave.x_boundaries[1]) + 1))
