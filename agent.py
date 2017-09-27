@@ -21,8 +21,8 @@ def poll_agent(agent, percepts):
     return agent.get_move()
 
 
-def get_ai_iteration_generator(agent):
-    current_state = gamestate.GameState()
+def get_ai_iteration_generator(agent, fog_on=True):
+    current_state = gamestate.GameState(fog_on=fog_on)
     while True: # no end condition defined by book
         current_percepts = current_state.get_percepts()
         agent_move = poll_agent(agent, current_percepts)

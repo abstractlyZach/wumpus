@@ -45,6 +45,8 @@ def get_percept_message(percepts):
         message_list.append('Your face hurts. You ran into a wall.')
     if percepts.stench:
         message_list.append("PEEYEWWWWWW! What's that smell?! Something rank lurks nearby...")
+    if message_list == []:
+        message_list.append("You don't feel a thing. You monster.")
     return '\n'.join(message_list)
 
 def handle_command(game_state, command):

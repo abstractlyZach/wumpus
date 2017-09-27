@@ -16,7 +16,6 @@ class GameState:
         self._bump = False
         self._scream = False
         self._points = 0
-        self._new_cave()
         self._fog_on = fog_on
         self._dev_mode = False
         self._num_caves_traversed = 0
@@ -24,11 +23,13 @@ class GameState:
         self._num_wumpus_kills = 0
         self._gold_grabbed = 0
         self._gold_kept = 0
+        self._new_cave()
 
     def _new_cave(self):
         self._cave = cave.Cave()
         self._num_caves_traversed += 1
         self._current_room = self._cave.get_room(1, 1)
+        self._current_orientation = 'east'
 
         self._player_holding_gold = False
         # mark the room visited when you spawn there. All other rooms are walked into
