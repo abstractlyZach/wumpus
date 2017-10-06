@@ -23,6 +23,8 @@ def poll_agent(agent, percepts):
 
 def get_ai_iteration_generator(agent, fog_on=True):
     current_state = gamestate.GameState(fog_on=fog_on)
+    # yield turn 0 for the first move
+    yield current_state
     while True: # no end condition defined by book
         current_percepts = current_state.get_percepts()
         agent_move = poll_agent(agent, current_percepts)

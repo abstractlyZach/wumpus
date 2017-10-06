@@ -6,7 +6,7 @@ import cave
 from collections import namedtuple
 
 Percepts = namedtuple('Percepts',
-                      ['glitter', 'breeze', 'scream', 'bump', 'stench']
+                      ['glitter', 'breeze', 'scream', 'bump', 'stench', 'points']
                       )
 
 PLAYER_DIRECTION_MARKERS = {'north': '^', 'south': 'v', 'east': '>', 'west': '<'}
@@ -24,6 +24,7 @@ class GameState:
         self._gold_grabbed = 0
         self._gold_kept = 0
         self._new_cave()
+        self._previous_action = None
 
     def _new_cave(self):
         self._cave = cave.Cave()
@@ -79,6 +80,7 @@ class GameState:
         def turn_wrapper(self):
             self._start_of_turn()
             action_function(self)
+            self._previous_action = action_function.__name__
             self._end_of_turn()
         return turn_wrapper
 
@@ -148,10 +150,13 @@ class GameState:
                             breeze=self._current_room.breeze,
                             stench=self._current_room.stench,
                             scream=self._scream,
-                            bump=self._bump)
+                            bump=self._bump,
+                            points=self._points)
         """
         I feel like the player should be able to perceive themself falling into a pit or being eaten by a wumpus,
         but Norvig-Russell seems to be pretty explicit that the player only receives these 5 percepts. Tough luck.
+        I'm leaving points in there though, because a bot DOES need performance measure and a way of measuring
+        death.
         """
         return percepts
 
@@ -247,6 +252,10 @@ class GameState:
     @property
     def gold_kept(self):
         return self._gold_kept
+
+    @property
+    def previous_action(self):
+        return self._previous_action
 
 
 class DevModeException(Exception):

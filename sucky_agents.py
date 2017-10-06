@@ -20,14 +20,28 @@ class ProgressMan(agent.Agent):
         return numpy.random.choice(['left', 'right', 'forward'], 1, p=[.25, .25, .5])[0]
 
 
-# class DeathAware(agent.Agent):
-#     def __init__(self):
-#         self._previous_score =
+class DeathAware(agent.Agent):
+    def __init__(self):
+        self._previous_score = 0
+
+
 
 
 class LocationAware(agent.Agent):
     """Knows its place in the world"""
     def __init__(self):
+        self._previous_score = 0
+        self._new_cave()
+        super().__init__()
+
+    def handle_percepts(self, percepts):
+        """Takes in percepts and moves the agent to a new cave if it dies"""
+        new_score = percepts.points
+        if self._previous_score - new_score >= 1000:
+            self._new_cave()
+        self._previous_score = new_score
+
+    def _new_cave(self):
         self._direction = 'east'
         self._coordinates = (0, 0)
         self._unvisited = set()
@@ -35,7 +49,6 @@ class LocationAware(agent.Agent):
             for y in range(4):
                 self._unvisited.add((x, y))
         self._unvisited.remove((0, 0))
-        super().__init__()
 
     @property
     def direction(self):
@@ -44,9 +57,6 @@ class LocationAware(agent.Agent):
     @property
     def coordinates(self):
         return self._coordinates
-
-    def get_move(self):
-        pass
 
     def turn_left(self):
         direction_index = gamestate.DIRECTIONS.index(self._direction)
@@ -58,6 +68,7 @@ class LocationAware(agent.Agent):
 
     def move_forward(self):
         self._coordinates = self.forward_prediction()
+        self._unvisited.remove(self._coordinates)
 
     def forward_prediction_after_turn(self, turn_direction):
         """Predict where the agent will be after a turn and a forward move"""
@@ -103,6 +114,11 @@ class LocationAware(agent.Agent):
 class PrincessJasmine(LocationAware):
     """She can't go back to where she used to be."""
     def get_move(self):
+        print('current location: {}'.format(self.coordinates))
+        print('going forward puts me at {}'.format(self.forward_prediction()))
+        print('unvisited rooms: {}'.format(self._unvisited))
+        print('{} unvisited rooms'.format(len(self._unvisited)))
+
         if (self.forward_prediction() in self._unvisited) and (self.forward_prediction() != self._coordinates):
             self.move_forward()
             return'forward'
