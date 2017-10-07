@@ -21,8 +21,15 @@ def poll_agent(agent, percepts):
     return agent.get_move()
 
 
-def get_ai_iteration_generator(agent, fog_on=True):
-    current_state = gamestate.GameState(fog_on=fog_on)
+def get_ai_iteration_generator(agent, game_state=None, fog_on=True):
+    """
+    Create a turn iteration generator. If game_state is defined, the fog will be determined by the
+    gamestate that was given.
+    """
+    if game_state:
+        current_state = game_state
+    else:
+        current_state = gamestate.GameState(fog_on=fog_on)
     # yield turn 0 for the first move
     yield current_state
     while True: # no end condition defined by book
