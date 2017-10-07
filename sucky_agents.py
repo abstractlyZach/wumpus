@@ -20,13 +20,6 @@ class ProgressMan(agent.Agent):
         return numpy.random.choice(['left', 'right', 'forward'], 1, p=[.25, .25, .5])[0]
 
 
-class DeathAware(agent.Agent):
-    def __init__(self):
-        self._previous_score = 0
-
-
-
-
 class LocationAware(agent.Agent):
     """Knows its place in the world"""
     def __init__(self):
@@ -169,6 +162,10 @@ class DirectionAgent(LocationAware):
                 self._action_queue.append('left')
                 self._action_queue.append('left')
         self._action_queue.append('forward')
+
+    # def make_move(self):
+    #     """Moves in a direction."""
+    #     gamestate.DIRECTIONS
 
 
 
