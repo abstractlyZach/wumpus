@@ -131,6 +131,11 @@ class DirectionAgent(LocationAware):
         super().__init__()
         self._action_queue = []
 
+    def opposite_direction(self, direction):
+        direction_index = (gamestate.DIRECTIONS.index(direction) + 2) % 4
+        return gamestate.DIRECTIONS[direction_index]
+
+
     def about_face(self):
         """Turn around 180 degrees"""
         self._action_queue.append('left')
@@ -173,29 +178,36 @@ class DirectionAgent(LocationAware):
         return self._action_queue.pop()
 
 
-# class ScaredyCat(LocationAware):
-#     """
-#     Doesn't have many goals in life except for running away from anything remotely dangerous.
-#     Upon finding the first sign of danger, he immediately runs back to the ladder and climbs up.
-#     """
-#     def __init__(self):
-#         super().__init__()
-#         self.path_from_ladder = []
-#         # If the agent is scared, he just wants to get back to the ladder as safely as possible
-#         self.scared = False
-#
-#     def handle_percepts(self, percepts):
-#         super().handle_percepts(percepts)
-#         self._path_to_ladder =
-#
-#     def backtrack_to_ladder(self):
-#         last_move = self.path_from_ladder.pop()
-#         if last_move == 'left':
-#             return 'right'
-#         elif last_move == 'right':
-#             return 'left'
-#         elif last_move == 'forward':
-#             self.path_from_ladder.append('back')
-#         else:
-#             pass
+class ScaredyCat(DirectionAgent):
+    """
+    Doesn't have many goals in life except for running away from anything remotely dangerous.
+    Upon finding the first sign of danger, he immediately runs back to the ladder and climbs up.
+    """
+    def __init__(self):
+        super().__init__()
+        self.directions_from_ladder = []
+        # If the agent is scared, he just wants to get back to the ladder as safely as possible
+        self.scared = False
 
+    def handle_percepts(self, percepts):
+        super().handle_percepts(percepts)
+        if percepts.stench or percepts.breeze:
+            self.scared = True
+
+    def get_move(self):
+        if self.scared:
+            if len(self.directions_from_ladder) == 0:
+                # climb to new level. no longer scared
+                self.scared = False
+                return 'climb'
+            else:
+                if len(self._action_queue) == 0:
+                    direction_to_get_here = self.directions_from_ladder.pop()
+                    self.queue_move_actions(self.opposite_direction(direction_to_get_here))
+                return self._action_queue.pop()
+        else:
+            if len(self._action_queue) == 0:
+                direction = numpy.random.choice(['north', 'west', 'south', 'east'], p=[.4, .4, .1, .1])
+                self.directions_from_ladder.append(direction)
+                self.queue_move_actions(direction)
+            return self._action_queue.pop()

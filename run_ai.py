@@ -6,7 +6,7 @@ import sucky_agents
 
 if __name__ == '__main__':
     moves = []
-    my_agent = sucky_agents.PrincessJasmine()
+    my_agent = sucky_agents.ScaredyCat()
     move_generator = agent.get_ai_iteration_generator(my_agent, fog_on=False)
 
     for i in range(40):
@@ -19,7 +19,7 @@ if __name__ == '__main__':
         print(cli.get_percept_message(current_gamestate.get_percepts()))
         print()
         print('-' * 20)
-        # time.sleep(2)
+        time.sleep(.7)
 
     for move in moves:
         print(move)

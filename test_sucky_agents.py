@@ -27,3 +27,10 @@ class TestDirectionAgent(object):
         assert self._agent.how_to_turn('east') == 'left'
         assert self._agent.how_to_turn('west') == 'right'
         assert self._agent.how_to_turn('north') == 'about face'
+
+    def test_opposite_direction(self):
+        agent = sucky_agents.DirectionAgent()
+        assert agent.opposite_direction('north') == 'south'
+        assert agent.opposite_direction('south') == 'north'
+        assert agent.opposite_direction('east') == 'west'
+        assert agent.opposite_direction('west') == 'east'
