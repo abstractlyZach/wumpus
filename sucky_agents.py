@@ -157,21 +157,6 @@ class DirectionAgent(LocationAware):
         elif directional_distance == 3:
             return 'left'
 
-    # def go_north(self):
-    #     if self._direction == 'north':
-    #         self.move_forward()
-    #         return 'forward'
-    #     elif self._direction == 'west':
-    #         self._action_queue.append('forward')
-    #         self.turn_right()
-    #         return 'right'
-    #     elif self._direction == 'east':
-    #         self._action_queue.append('forward')
-    #         self.turn_left()
-    #         return 'left'
-    #     elif self._direction == 'south':
-    #         return self.about_face()
-
     def queue_move_actions(self, direction):
         """Queue up the actions to move in that direction"""
         turn_action = self.how_to_turn(direction)
