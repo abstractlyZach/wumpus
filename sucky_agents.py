@@ -163,10 +163,14 @@ class DirectionAgent(LocationAware):
                 self._action_queue.append('left')
         self._action_queue.append('forward')
 
-    # def make_move(self):
-    #     """Moves in a direction."""
-    #     gamestate.DIRECTIONS
-
+    def make_move(self):
+        """Moves in a direction."""
+        # if queue is empty, move in a random direction and add those actions to the queue
+        if len(self._action_queue) == 0:
+            random_direction = numpy.random.choice(gamestate.DIRECTIONS)
+            self.queue_move_actions(random_direction)
+        # make the next move in the queue
+        return self._action_queue.pop()
 
 
 # class ScaredyCat(LocationAware):
