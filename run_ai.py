@@ -7,7 +7,7 @@ import sucky_agents
 if __name__ == '__main__':
     moves = []
     my_agent = sucky_agents.PrincessJasmine()
-    move_generator = agent.get_ai_iteration_generator(my_agent)
+    move_generator = agent.get_ai_iteration_generator(my_agent, fog_on=False)
 
     for i in range(40):
         current_gamestate = next(move_generator)

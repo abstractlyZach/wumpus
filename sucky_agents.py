@@ -131,3 +131,85 @@ class PrincessJasmine(LocationAware):
         else:
             # if she feels trapped, she just starts moping and examining the floor
             return 'grab'
+
+class DirectionAgent(LocationAware):
+    """Has its own commands to go in the direction it wants (NSEW)"""
+    def __init__(self):
+        super().__init__()
+        self._action_queue = []
+
+    def about_face(self):
+        """Turn around 180 degrees"""
+        self._action_queue.append('left')
+        self.turn_left()
+        return 'left'
+
+    def how_to_turn(self, target_direction):
+        if self._direction == target_direction:
+            return None
+        current_direction_index = gamestate.DIRECTIONS.index(self._direction)
+        target_direction_index = gamestate.DIRECTIONS.index(target_direction)
+        directional_distance = (target_direction_index - current_direction_index) % 4
+        if directional_distance == 2:
+            return 'about face'
+        elif directional_distance == 1:
+            return 'right'
+        elif directional_distance == 3:
+            return 'left'
+
+    # def go_north(self):
+    #     if self._direction == 'north':
+    #         self.move_forward()
+    #         return 'forward'
+    #     elif self._direction == 'west':
+    #         self._action_queue.append('forward')
+    #         self.turn_right()
+    #         return 'right'
+    #     elif self._direction == 'east':
+    #         self._action_queue.append('forward')
+    #         self.turn_left()
+    #         return 'left'
+    #     elif self._direction == 'south':
+    #         return self.about_face()
+
+    def queue_move_actions(self, direction):
+        """Queue up the actions to move in that direction"""
+        turn_action = self.how_to_turn(direction)
+        if turn_action:
+            if turn_action == 'left':
+                self._action_queue.append('left')
+            elif turn_action == 'right':
+                self._action_queue.append('right')
+            elif turn_action == 'about face':
+                self._action_queue.append('left')
+                self._action_queue.append('left')
+        self._action_queue.append('forward')
+
+
+
+# class ScaredyCat(LocationAware):
+#     """
+#     Doesn't have many goals in life except for running away from anything remotely dangerous.
+#     Upon finding the first sign of danger, he immediately runs back to the ladder and climbs up.
+#     """
+#     def __init__(self):
+#         super().__init__()
+#         self.path_from_ladder = []
+#         # If the agent is scared, he just wants to get back to the ladder as safely as possible
+#         self.scared = False
+#
+#     def handle_percepts(self, percepts):
+#         super().handle_percepts(percepts)
+#         self._path_to_ladder =
+#
+#     def backtrack_to_ladder(self):
+#         last_move = self.path_from_ladder.pop()
+#         if last_move == 'left':
+#             return 'right'
+#         elif last_move == 'right':
+#             return 'left'
+#         elif last_move == 'forward':
+#             self.path_from_ladder.append('back')
+#         else:
+#             pass
+
